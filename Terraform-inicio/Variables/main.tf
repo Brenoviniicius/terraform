@@ -13,16 +13,16 @@ terraform {
 
 #Declarando o provedor, sua região e o profile configurando no aws CLI
 provider "aws" {
-    region = var.aws_region
-    profile = var.aws_profile
+  region  = var.aws_region
+  profile = var.aws_profile
 }
 
 #Declarando o tipo de istância que será usada
-resource "aws_instace" "instace-test" {
-    #Declarando o ID da VM EC2
-    ami = var.instance_ami
-    #Declarando o tipo
-    instance_type = var.instance_type
+resource "aws_instance" "instace-test" {
+  #Declarando o ID da VM EC2
+  ami = var.instance_ami
+  #Declarando o tipo
+  instance_type = var.instance_type
 
-    tags = var.instace_tags
+  tags = var.instace_tags
 }

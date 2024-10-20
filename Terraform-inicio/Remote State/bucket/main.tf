@@ -9,7 +9,15 @@ terraform {
       version = "5.72.0"
     }
   }
+
+  backend "s3" {
+    bucket  = "tfstate-084828603840"
+    key     = "backend/dev/terraform.tfstate"
+    region  = "us-east-2"
+    profile = "default"
+  }
 }
+
 
 #Declarando o provedor e a região dele, e o profile configurando no aws.CLI
 provider "aws" {
@@ -17,10 +25,10 @@ provider "aws" {
   profile = "default"
 }
 
-data "aws_caller_identity" "current" {} 
+data "aws_caller_identity" "current" {}
 
 
-#Setando o recurso que será usado
+#Recurso do bucket
 resource "aws_s3_bucket" "remote" {
   bucket = "tfstate-${data.aws_caller_identity.current.account_id}"
 
@@ -32,14 +40,24 @@ resource "aws_s3_bucket" "remote" {
   }
 }
 
-resource "aws_s3_bucket_acl" "remote" {
-  bucket = "tfstate-${data.aws_caller_identity.current.account_id}"
-  acl    = "private"
-}
+#Recurso da visiabilidade
+#resource "aws_s3_bucket_acl" "remote" {
+#bucket = "tfstate-${data.aws_caller_identity.current.account_id}"
+#acl    = "private"
+#}
 
+#Definindo o recurso remoto do bucket
 resource "aws_s3_bucket_versioning" "remote" {
   bucket = "tfstate-${data.aws_caller_identity.current.account_id}"
   versioning_configuration {
     status = "Enabled"
   }
+}
+
+output "remote_state_bucket" {
+  value = aws_s3_bucket.remote.bucket
+}
+
+output "remote_state_bucket_arn" {
+  value = aws_s3_bucket.remote.arn
 }

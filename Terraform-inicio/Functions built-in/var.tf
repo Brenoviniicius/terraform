@@ -1,8 +1,5 @@
 #Setando as variáveis do terraform
 variable "env" {
-  type        = string
-  description = ""
-  default     = ""
 }
 
 #Setando a variavel de região
@@ -24,17 +21,41 @@ variable "instance_ami" {
   type        = string
   description = ""
   default     = "ami-0ea3c35c5c3284d82"
+
+  validation {
+    condition = length(var.instance_ami) > 4 && substr(var.instance_ami, 0, 4) == "ami-"
+    error_message = "value not valid"
+  }
 }
 
 #Setando a variavel do tipo da ami
 variable "instance_type" {
-  type        = string
-  description = ""
-  default     = "t2.micro"
+  type = object ({
+    dev = string
+    prod = string
+  })
+  description = "Type of instances to create"
+  default = {
+    dev = "t2.micro"
+    prod = "t2.micro"
+  }
+}
+
+#Setando A quantidade de instancia será criada
+variable "instance_number" {
+  type = object ({
+    dev = number
+    prod = number
+  })
+  description = "Number of instances to create"
+  default = {
+    dev = 3
+    prod = 1
+  }
 }
 
 #Setando a variavel tags
-variable "instace_tags" {
+variable "instance_tags" {
   type        = map(string)
   description = ""
   default = {

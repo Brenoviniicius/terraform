@@ -8,7 +8,7 @@ resource "aws_instance" "docker_cluster" {
     tags = merge(
         local.common_tags,
         {
-            Project = "Building cluster"
+            Project = "Building a cluster"
             Env = format("%s", var.env)
             Name = format("Instance %d", count.index + 1)
         }
